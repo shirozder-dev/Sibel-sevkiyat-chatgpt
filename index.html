@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b3f"><title>Tekstil Export Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toast" class="toast" role="status"></div>
+<div id="loginScreen" class="login-screen hidden">
+  <div class="login-card"><div class="brand-mark large">TE</div><p class="eyebrow">TEKSTİL EXPORT MANAGER</p><h1>Tekrar hoş geldiniz</h1><p class="muted">Sevkiyatlarınızı güvenli şekilde yönetin.</p>
+    <form id="loginForm"><label>E-posta adresi<input id="loginEmail" type="email" autocomplete="username" required placeholder="ad@şirket.com"></label><label>Şifre<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Şifreniz"></label><button class="btn primary full" type="submit">Giriş yap <span>→</span></button></form>
+    <p class="tiny muted">Kullanıcı oluşturmak için Firebase Console içinden Authentication bölümünü kullanın.</p>
+  </div>
+</div>
+<div class="app-shell" id="appShell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">TE</div><div><strong>Tekstil Export</strong><span>OPERASYON MERKEZİ</span></div></div>
+    <div class="workspace-label">ÇALIŞMA ALANI</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard"><span class="nav-icon">▦</span> Genel Bakış</button>
+      <button class="nav-item" data-view="containers"><span class="nav-icon">▤</span> Konteynerler <span class="nav-count" id="navContainerCount">0</span></button>
+      <button class="nav-item" data-view="tasks"><span class="nav-icon">✓</span> Görevler <span class="nav-count warm" id="navTaskCount">0</span></button>
+      <button class="nav-item" data-view="history"><span class="nav-icon">◷</span> İşlem Geçmişi</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="secure-card"><div class="secure-icon">✦</div><strong>Her şey kontrol altında</strong><p>Belgeleri, tarihleri ve takip işlerini tek yerde tutun.</p></div><button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span> Ayarlar</button><div class="user-row"><div class="avatar" id="userAvatar">TE</div><div class="user-meta"><strong id="userName">Yerel demo</strong><span id="connectionLabel">Demo modu</span></div><button class="icon-btn hidden" id="logoutBtn" title="Çıkış yap">↗</button></div></div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><button class="mobile-menu icon-btn" id="menuBtn" aria-label="Menüyü aç">☰</button><div class="breadcrumbs"><span>Operasyon</span><b>/</b><strong id="crumbTitle">Genel Bakış</strong></div><div class="top-actions"><div class="today-pill"><span class="live-dot"></span><span id="todayText"></span></div><button class="btn primary" id="newContainerBtn"><span class="plus">＋</span> Yeni konteyner</button></div></header>
+    <div class="content" id="viewRoot"></div>
+    <footer>Tekstil Export Manager <span>•</span> USD <span>•</span> <span id="footerMode">Yerel demo</span></footer>
+  </main>
+</div>
+<div class="modal-backdrop hidden" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-header"><div><p class="eyebrow" id="modalEyebrow">SEVKİYAT KAYDI</p><h2 id="modalTitle">Yeni konteyner</h2></div><button class="icon-btn" id="closeModal" aria-label="Kapat">✕</button></header><form id="containerForm"><div class="form-grid">
+  <label>Konteyner numarası *<input name="containerNo" required placeholder="Örn. TCLU1234567"></label><label>Müşteri adı *<input name="customer" required placeholder="Müşteri / firma adı"></label>
+  <label>Rezervasyon numarası<input name="bookingNo" placeholder="Booking no."></label><label>Şirket / hat<input name="carrier" placeholder="Örn. MSC, Maersk"></label>
+  <label>Yükleme limanı<input name="origin" placeholder="Örn. Ambarlı, İstanbul"></label><label>Varış limanı<input name="destination" placeholder="Örn. Jebel Ali, Dubai"></label>
+  <label>Yükleme tarihi<input name="loadingDate" type="date"></label><label>Tahmini varış tarihi<input name="arrivalDate" type="date"></label>
+  <label>Yükleme tipi<select name="loadType"><option value="FCL">Tam konteyner (FCL)</option><option value="LCL">Parsiyel (LCL)</option></select></label><label>Ürün türü<select name="productType"><option>Kumaş</option><option>Seccade</option><option>Peluş / kadife halı</option><option>Karışık ürün</option><option>Diğer</option></select></label>
+  <label>Ürün / yükleme notu<input name="cargoNote" placeholder="Model, koli, adet vb. (isteğe bağlı)"></label><label>Genel durum<select name="status"><option value="booking">Rezervasyon</option><option value="loading">Yükleme planlandı</option><option value="loaded">Yüklendi</option><option value="documents">Belge hazırlığı</option><option value="departed">Hareket etti</option><option value="arrived">Varış yaptı</option><option value="balance">Bakiye bekleniyor</option><option value="released">Belgeler / Telex tamamlandı</option><option value="closed">Kapatıldı</option></select></label>
+  <label>Bakiye durumu<select name="paymentStatus"><option value="pending">Ödeme bekleniyor</option><option value="paid">Ödendi</option><option value="partial">Kısmen ödendi</option><option value="na">Takip edilmiyor</option></select></label><label>Takip tarihi<input name="followupDate" type="date"></label>
+  <label class="span-2">Notlar<textarea name="notes" rows="3" placeholder="Operasyon notları, değişiklikler, takip bilgileri..."></textarea></label>
+ </div><div class="modal-section"><div class="section-title"><div><h3>Belge kontrol listesi</h3><p>Her belgeyi ayrı ayrı takip edin.</p></div></div><div class="document-grid" id="documentFields"></div></div><div class="modal-footer"><span class="tiny muted">* Zorunlu alanlar</span><div><button class="btn secondary" type="button" id="cancelModal">Vazgeç</button><button class="btn primary" type="submit">Kaydet <span>→</span></button></div></div></form></section></div>
+<script type="module" src="app.js"></script>
+</body></html>
